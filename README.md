@@ -424,3 +424,7 @@ This project is licensed under the MIT License. See [`LICENSE`](LICENSE) for the
 **Saksham FLN** · Foundational Learning Support · Problem PS000034
 
 </div>
+
+## Development History & Milestones
+
+- **2025-01-26** [H]: Foundational literacy & numeracy roadmap spec.
