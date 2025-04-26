@@ -456,3 +456,4 @@ This project is licensed under the MIT License. See [`LICENSE`](LICENSE) for the
 - **2025-04-19** [E]: Foundational literacy & numeracy roadmap spec.
 - **2025-04-20** [E]: Foundational literacy & numeracy roadmap spec.
 - **2025-04-23** [E]: Foundational literacy & numeracy roadmap spec.
+- **2025-04-26** [E]: Foundational literacy & numeracy roadmap spec.
