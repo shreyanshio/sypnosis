@@ -17,6 +17,8 @@ import {
 } from 'lucide-react'
 import { useI18n } from '@/lib/i18n/context'
 import { learningPlanService } from '@/lib/services/learningPlanService'
+import { studentService } from '@/lib/services/studentService'
+import { teacherActionService } from '@/lib/services/teacherActionService'
 import { auditService } from '@/lib/services/auditService'
 import { ActivityModal } from '@/components/activity-modal'
 import { LearningActivityItem } from '@/lib/types'
@@ -58,16 +60,31 @@ export default function SingleLearningPlanPage({ params }: PageProps) {
     const updated = learningPlanService.approvePlan(plan!.id, approvalNotes)
     if (updated) {
       setPlan({ ...updated })
+      const stu = studentService.getStudentById(plan!.studentId)
+      if (stu) {
+        studentService.updateStudent({
+          ...stu,
+          planStatus: 'Approved',
+          progressPercent: Math.max(stu.progressPercent, 20),
+        })
+      }
+      const actions = teacherActionService.getActions()
+      const matching = actions.find(
+        (a) => a.relatedStudentId === plan!.studentId && a.title.includes('Review and approve')
+      )
+      if (matching) {
+        teacherActionService.updateActionStatus(matching.id, 'Completed')
+      }
       auditService.logEvent({
         actorId: 'usr-tea-01',
         actorName: 'Asha Shah',
         role: 'teacher',
         eventType: 'plan_approved',
-        entityType: 'plan',
+        entityType: 'learning_plan',
         entityId: plan!.id,
         summary: `Teacher approved remedial pathway "${plan!.title}" for ${plan!.studentName}`,
       })
-      setToastMessage('Plan approved successfully!')
+      setToastMessage('Plan approved successfully! Student record and teacher actions synchronized.')
       setTimeout(() => setToastMessage(null), 3000)
     }
     setIsApproving(false)
@@ -78,6 +95,14 @@ export default function SingleLearningPlanPage({ params }: PageProps) {
     if (updated) {
       setPlan({ ...updated })
       setSelectedActivity(null)
+      studentService.recordActivityCompletion(plan!.studentId, observation)
+      const actions = teacherActionService.getActions()
+      const matching = actions.find(
+        (a) => a.relatedStudentId === plan!.studentId && a.status !== 'Completed'
+      )
+      if (matching) {
+        teacherActionService.updateActionStatus(matching.id, 'Completed')
+      }
       auditService.logEvent({
         actorId: 'usr-tea-01',
         actorName: 'Asha Shah',
@@ -87,8 +112,8 @@ export default function SingleLearningPlanPage({ params }: PageProps) {
         entityId: activityId,
         summary: `Marked day activity completed for ${plan!.studentName}: ${observation}`,
       })
-      setToastMessage('Activity marked completed!')
-      setTimeout(() => setToastMessage(null), 3000)
+      setToastMessage('Activity marked completed! Progress updated across student, class, and teacher actions.')
+      setTimeout(() => setToastMessage(null), 3500)
     }
   }
 

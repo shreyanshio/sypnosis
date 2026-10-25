@@ -238,6 +238,24 @@ export const learningPlanService = {
     return list.find((p) => p.studentId === studentId)
   },
 
+  createOrUpdatePlan: (plan: LearningPlanRecord): void => {
+    const list = learningPlanService.getPlans()
+    const index = list.findIndex((p) => p.id === plan.id || p.studentId === plan.studentId)
+    let nextList: LearningPlanRecord[]
+    if (index >= 0) {
+      nextList = list.map((p, idx) => (idx === index ? plan : p))
+    } else {
+      nextList = [plan, ...list]
+    }
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(nextList))
+      } catch {
+        // Ignore
+      }
+    }
+  },
+
   approvePlan: (planId: string, teacherNotes: string): LearningPlanRecord | undefined => {
     const list = learningPlanService.getPlans()
     let updatedPlan: LearningPlanRecord | undefined

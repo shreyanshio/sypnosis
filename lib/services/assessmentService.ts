@@ -69,7 +69,19 @@ export const INITIAL_ASSESSMENTS: AssessmentRecord[] = [
   },
 ]
 
+export interface AssessmentAttempt {
+  id: string
+  assessmentId: string
+  studentId: string
+  answers: Record<string, string>
+  currentQuestionIndex: number
+  teacherNotes: string
+  status: 'In Progress' | 'Completed'
+  lastSavedAt: string
+}
+
 const STORAGE_KEY = 'saksham_fln_assessments_v1'
+const ATTEMPTS_STORAGE_KEY = 'saksham_fln_assessment_attempts_v1'
 
 export const assessmentService = {
   getAssessments: (filter?: { classId?: string; status?: string; subject?: string }): AssessmentRecord[] => {
@@ -117,6 +129,52 @@ export const assessmentService = {
       } catch {
         // Ignore
       }
+    }
+  },
+
+  getAttempt: (assessmentId: string, studentId: string): AssessmentAttempt | undefined => {
+    if (typeof window === 'undefined') return undefined
+    try {
+      const raw = localStorage.getItem(ATTEMPTS_STORAGE_KEY)
+      if (!raw) return undefined
+      const attempts: AssessmentAttempt[] = JSON.parse(raw)
+      return attempts.find((a) => a.assessmentId === assessmentId && a.studentId === studentId)
+    } catch {
+      return undefined
+    }
+  },
+
+  saveAttempt: (attempt: AssessmentAttempt): void => {
+    if (typeof window === 'undefined') return
+    try {
+      const raw = localStorage.getItem(ATTEMPTS_STORAGE_KEY)
+      const attempts: AssessmentAttempt[] = raw ? JSON.parse(raw) : []
+      const index = attempts.findIndex(
+        (a) => a.assessmentId === attempt.assessmentId && a.studentId === attempt.studentId
+      )
+      if (index >= 0) {
+        attempts[index] = attempt
+      } else {
+        attempts.unshift(attempt)
+      }
+      localStorage.setItem(ATTEMPTS_STORAGE_KEY, JSON.stringify(attempts))
+    } catch {
+      // Ignore
+    }
+  },
+
+  clearAttempt: (assessmentId: string, studentId: string): void => {
+    if (typeof window === 'undefined') return
+    try {
+      const raw = localStorage.getItem(ATTEMPTS_STORAGE_KEY)
+      if (!raw) return
+      const attempts: AssessmentAttempt[] = JSON.parse(raw)
+      const nextList = attempts.filter(
+        (a) => !(a.assessmentId === assessmentId && a.studentId === studentId)
+      )
+      localStorage.setItem(ATTEMPTS_STORAGE_KEY, JSON.stringify(nextList))
+    } catch {
+      // Ignore
     }
   },
 }

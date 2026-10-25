@@ -296,11 +296,13 @@ export interface SkillResult {
   skillName: string
   skillCategory: 'literacy' | 'numeracy'
   questionsCount: number
+  attemptedCount: number
   correctCount: number
   scorePercent: number
-  status: 'Mastered' | 'Emerging' | 'Probable Gap'
+  status: 'Mastered' | 'Emerging' | 'Probable Gap' | 'Insufficient Evidence'
   statusBadge: string
   isProbableGap: boolean
+  isInsufficientEvidence: boolean
   explanation: string
   recommendation: string
 }
@@ -312,6 +314,7 @@ export interface RecommendationEvidence {
   chosenOptionLabel: string
   targetOptionLabel: string
   isCorrect: boolean
+  isAttempted: boolean
   misconceptionDiagnosis: string
   pedagogicalEvidence: string
 }
@@ -332,12 +335,14 @@ export interface RecommendedActivity {
 export interface DiagnosticEvaluationResult {
   overallScore: number
   totalQuestions: number
+  attemptedQuestionsCount: number
   correctAnswersCount: number
   skills: SkillResult[]
   evidences: RecommendationEvidence[]
   learningSequence: string[]
   recommendedActivities: RecommendedActivity[]
   probableGapsCount: number
+  insufficientEvidenceCount: number
   validatedGapsCount: number
   pedagogicalSummary: string
   clearNextStep: {
@@ -352,6 +357,8 @@ export interface DiagnosticEvaluationResult {
  * Pure explainable scoring engine.
  * Takes submitted answers and deterministically produces skill breakdown,
  * evidence trails, learning sequence, and daily activities.
+ * Clearly separates 'Insufficient Evidence' (unattempted questions)
+ * from 'Probable Gap' (demonstrated need for practice based on errors).
  */
 export function evaluateFLNDiagnostic(
   answers: Record<string, string>,
@@ -359,6 +366,7 @@ export function evaluateFLNDiagnostic(
 ): DiagnosticEvaluationResult {
   const totalQuestions = FLN_DIAGNOSTIC_QUESTIONS.length
   let correctCount = 0
+  let attemptedCount = 0
   const evidences: RecommendationEvidence[] = []
 
   // Group questions by skill
@@ -368,6 +376,7 @@ export function evaluateFLNDiagnostic(
       skillName: string
       category: 'literacy' | 'numeracy'
       questions: FLNQuestion[]
+      attempted: number
       correct: number
     }
   > = {}
@@ -378,16 +387,22 @@ export function evaluateFLNDiagnostic(
         skillName: q.skillName,
         category: q.skillCategory,
         questions: [],
+        attempted: 0,
         correct: 0,
       }
     }
     skillMap[q.skillId].questions.push(q)
 
     const chosenOptionId = answers[q.id]
-    const chosenOption = q.options.find((opt) => opt.id === chosenOptionId)
+    const isAttempted = Boolean(chosenOptionId && chosenOptionId.trim() !== '')
+    const chosenOption = isAttempted ? q.options.find((opt) => opt.id === chosenOptionId) : undefined
     const targetOption = q.options.find((opt) => opt.isCorrect)!
 
     const isCorrect = chosenOption ? chosenOption.isCorrect : false
+    if (isAttempted) {
+      attemptedCount += 1
+      skillMap[q.skillId].attempted += 1
+    }
     if (isCorrect) {
       correctCount += 1
       skillMap[q.skillId].correct += 1
@@ -397,41 +412,57 @@ export function evaluateFLNDiagnostic(
       questionId: q.id,
       questionText: `${q.questionGu} (${q.questionEn})`,
       skillName: q.skillName,
-      chosenOptionLabel: chosenOption ? `${chosenOption.labelGu} - ${chosenOption.labelEn}` : 'No response',
+      chosenOptionLabel: isAttempted && chosenOption
+        ? `${chosenOption.labelGu} - ${chosenOption.labelEn}`
+        : 'Unattempted (No response submitted)',
       targetOptionLabel: `${targetOption.labelGu} - ${targetOption.labelEn}`,
       isCorrect,
-      misconceptionDiagnosis: isCorrect
+      isAttempted,
+      misconceptionDiagnosis: !isAttempted
+        ? 'Insufficient Evidence: Question unattempted. Cannot deduce misconception without observational sample.'
+        : isCorrect
         ? 'Correct answer demonstrated: Solid conceptual grasp of this micro-competency.'
         : chosenOption?.misconceptionDiagnosis ||
-          'Incorrect response indicates prerequisite foundational support needed.',
-      pedagogicalEvidence: isCorrect
-        ? `Learner accurately identified target concept without positional or symbolic errors.`
+          'Incorrect response indicates demonstrated need for prerequisite foundational support.',
+      pedagogicalEvidence: !isAttempted
+        ? 'Item was skipped/unattempted. Requires brief 1-on-1 teacher oral verification.'
+        : isCorrect
+        ? 'Learner accurately identified target concept without positional or symbolic errors.'
         : `Learner selected '${chosenOption?.labelGu || 'None'}' instead of '${targetOption.labelGu}'. Misconception: ${
-            chosenOption?.misconceptionDiagnosis || 'Incomplete prerequisite model.'
+            chosenOption?.misconceptionDiagnosis || 'Incomplete prerequisite mental model.'
           }`,
     })
   })
 
-  const overallScore = Math.round((correctCount / totalQuestions) * 100)
+  const overallScore = attemptedCount > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0
 
   // Compute skill-level results
   const skills: SkillResult[] = Object.entries(skillMap).map(([sId, data]) => {
     const qCount = data.questions.length
+    const sAttempted = data.attempted
     const sCorrect = data.correct
-    const sPercent = Math.round((sCorrect / qCount) * 100)
+    const sPercent = sAttempted > 0 ? Math.round((sCorrect / qCount) * 100) : 0
 
     let status: SkillResult['status'] = 'Mastered'
     let statusBadge = 'Demonstrated Mastery'
     let isProbableGap = false
+    let isInsufficientEvidence = false
     let explanation = 'Student reliably applied this micro-skill in the screening check.'
     let recommendation = 'Maintain automaticity through occasional small-group games.'
 
-    if (sPercent < 50) {
+    if (sAttempted === 0) {
+      status = 'Insufficient Evidence'
+      statusBadge = 'Insufficient Evidence (Unattempted)'
+      isInsufficientEvidence = true
+      isProbableGap = false
+      explanation = 'No answers were recorded for this skill check. Insufficient diagnostic evidence to infer gap or mastery.'
+      recommendation = 'Administer brief 2-minute oral check during foundational period to gather observation data.'
+    } else if (sPercent < 50) {
       status = 'Probable Gap'
-      statusBadge = 'Probable Learning Gap (Screening Signal)'
+      statusBadge = 'Demonstrated Need for Practice (Probable Gap)'
       isProbableGap = true
       explanation =
-        'Single-assessment screening signal: Response pattern indicates an unverified prerequisite gap in this domain. Requires classroom teacher verification.'
+        'Response pattern indicates a demonstrated need for prerequisite practice. Single-assessment screening signal; requires teacher classroom confirmation.'
       recommendation =
         'Target with tactile classroom manipulatives (10-15 mins/day) before introducing symbolic worksheets.'
     } else if (sPercent < 100) {
@@ -446,17 +477,20 @@ export function evaluateFLNDiagnostic(
       skillName: data.skillName,
       skillCategory: data.category,
       questionsCount: qCount,
+      attemptedCount: sAttempted,
       correctCount: sCorrect,
       scorePercent: sPercent,
       status,
       statusBadge,
       isProbableGap,
+      isInsufficientEvidence,
       explanation,
       recommendation,
     }
   })
 
   const probableGapsCount = skills.filter((s) => s.isProbableGap).length
+  const insufficientEvidenceCount = skills.filter((s) => s.isInsufficientEvidence).length
 
   // Build logical recommended learning sequence based on observed gaps
   const learningSequence: string[] = []
@@ -592,12 +626,14 @@ export function evaluateFLNDiagnostic(
   return {
     overallScore,
     totalQuestions,
+    attemptedQuestionsCount: attemptedCount,
     correctAnswersCount: correctCount,
     skills,
     evidences,
     learningSequence,
     recommendedActivities,
     probableGapsCount,
+    insufficientEvidenceCount,
     validatedGapsCount: 0,
     pedagogicalSummary,
     clearNextStep: {

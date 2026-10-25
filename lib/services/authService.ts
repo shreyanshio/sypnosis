@@ -70,6 +70,17 @@ export const DEMO_PROFILES: Record<Role, AuthUser> = {
     cluster: 'Khambhalia',
     district: 'Devbhumi Dwarka',
   },
+  admin: {
+    id: 'user-admin-01',
+    name: 'District Collectorate Education Cell',
+    displayName: 'Collectorate Admin',
+    email: 'admin.collector@dwarka.gov.demo',
+    role: 'admin',
+    schoolName: 'Collector Office, Devbhumi Dwarka',
+    schoolCode: 'COLL-DWK-01',
+    cluster: 'All Clusters (4 Talukas)',
+    district: 'Devbhumi Dwarka',
+  },
 }
 
 const STORAGE_KEY = 'saksham_fln_auth_v1'
@@ -113,6 +124,19 @@ export const authService = {
           canViewClusterReports: false,
           canViewDistrictReports: false,
           canAccessGuardianPortal: false,
+        }
+      case 'admin':
+        return {
+          canManageSchool: true,
+          canManageAcademicYears: true,
+          canManageClasses: true,
+          canManageUsers: true,
+          canRunAssessment: true,
+          canApprovePlans: true,
+          canManageContent: true,
+          canViewClusterReports: true,
+          canViewDistrictReports: true,
+          canAccessGuardianPortal: true,
         }
       case 'crc_coordinator':
         return {

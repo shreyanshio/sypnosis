@@ -186,6 +186,34 @@ export const classService = {
     }
   },
 
+  addClass: (newClass: ClassRoom): void => {
+    const list = classService.getClasses()
+    const nextList = [newClass, ...list]
+    classService.saveClasses(nextList)
+  },
+
+  updateClass: (updatedClass: ClassRoom): void => {
+    const list = classService.getClasses()
+    const nextList = list.map((c) => (c.id === updatedClass.id ? updatedClass : c))
+    classService.saveClasses(nextList)
+  },
+
+  updateClassTeacher: (classId: string, newTeacherName: string): void => {
+    const list = classService.getClasses()
+    const nextList = list.map((c) =>
+      c.id === classId ? { ...c, classTeacherName: newTeacherName } : c
+    )
+    classService.saveClasses(nextList)
+  },
+
+  incrementStudentCount: (classId: string): void => {
+    const list = classService.getClasses()
+    const nextList = list.map((c) =>
+      c.id === classId ? { ...c, enrolledStudentsCount: c.enrolledStudentsCount + 1 } : c
+    )
+    classService.saveClasses(nextList)
+  },
+
   exportClassCsv: (classId: string): void => {
     const c = classService.getClassById(classId)
     if (!c) return

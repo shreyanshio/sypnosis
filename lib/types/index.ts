@@ -4,6 +4,7 @@ export type Role =
   | 'crc_coordinator'
   | 'deo'
   | 'parent'
+  | 'admin'
 
 export type Locale = 'en' | 'gu' | 'hi'
 
@@ -240,7 +241,7 @@ export interface WeeklyScheduleDay {
   activityTitle: string
   targetSkill: string
   durationMinutes: number
-  status: 'scheduled' | 'completed' | 'pending'
+  status: 'scheduled' | 'completed' | 'pending' | 'ready'
 }
 
 export interface LearningPlanRecord {
@@ -350,9 +351,11 @@ export interface AuditEvent {
   eventType:
     | 'student_added'
     | 'student_updated'
+    | 'student_progress_updated'
     | 'class_reassigned'
     | 'assessment_created'
     | 'assessment_completed'
+    | 'diagnostic_submitted'
     | 'assessment_reviewed'
     | 'plan_created'
     | 'plan_approved'
@@ -360,7 +363,7 @@ export interface AuditEvent {
     | 'teacher_action_updated'
     | 'reassessment_scheduled'
     | 'content_published'
-  entityType: 'student' | 'classroom' | 'assessment' | 'plan' | 'activity' | 'action' | 'user'
+  entityType: 'student' | 'classroom' | 'assessment' | 'plan' | 'learning_plan' | 'activity' | 'action' | 'user'
   entityId: string
   timestamp: string
   summary: string

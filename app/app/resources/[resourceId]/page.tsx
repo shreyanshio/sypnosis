@@ -23,6 +23,7 @@ import {
 import { useI18n } from '@/lib/i18n/context'
 import { learningActivityService } from '@/lib/services/learningActivityService'
 import { studentService } from '@/lib/services/studentService'
+import { learningPlanService } from '@/lib/services/learningPlanService'
 import { auditService } from '@/lib/services/auditService'
 import { LearningActivity } from '@/lib/types'
 
@@ -106,6 +107,20 @@ export default function ResourceDetailPage({ params }: PageProps) {
     if (!activity) return
     const student = studentService.getStudentById(selectedStudentId)
     const targetName = student ? student.name : 'Aarav Kumar'
+
+    // Update student progress & completed counts
+    studentService.recordActivityCompletion(selectedStudentId, observationNotes)
+
+    // Complete activity in student's learning plan if found
+    if (student) {
+      const plan = learningPlanService.getPlanByStudentId(student.id)
+      if (plan) {
+        const matchingAct = plan.activities.find((a) => a.title.includes(activity.title) || a.format === activity.format)
+        if (matchingAct) {
+          learningPlanService.completeActivity(plan.id, matchingAct.id, observationNotes)
+        }
+      }
+    }
 
     auditService.logEvent({
       actorId: 'usr-tea-01',

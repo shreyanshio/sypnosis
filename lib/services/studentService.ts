@@ -1,4 +1,5 @@
 import { StudentRecord } from '@/lib/types'
+import { classService } from '@/lib/services/classService'
 
 export const INITIAL_STUDENTS: StudentRecord[] = [
   {
@@ -189,7 +190,13 @@ export const INITIAL_STUDENTS: StudentRecord[] = [
 const STORAGE_KEY = 'saksham_fln_students_v1'
 
 export const studentService = {
-  getStudents: (filter?: { classId?: string; standard?: number; status?: string; search?: string }): StudentRecord[] => {
+  getStudents: (filter?: {
+    classId?: string
+    standard?: number
+    section?: string
+    status?: string
+    search?: string
+  }): StudentRecord[] => {
     let list = INITIAL_STUDENTS
     if (typeof window !== 'undefined') {
       try {
@@ -201,8 +208,9 @@ export const studentService = {
     }
 
     return list.filter((s) => {
-      if (filter?.classId && s.classId !== filter.classId) return false
+      if (filter?.classId && filter.classId !== 'All' && s.classId !== filter.classId) return false
       if (filter?.standard && s.standard !== filter.standard) return false
+      if (filter?.section && filter.section !== 'All' && s.section !== filter.section) return false
       if (filter?.status && filter.status !== 'All' && s.overallStatus !== filter.status) return false
       if (filter?.search) {
         const term = filter.search.toLowerCase().trim()
@@ -246,5 +254,44 @@ export const studentService = {
         // Ignore
       }
     }
+    if (newStudent.classId) {
+      classService.incrementStudentCount(newStudent.classId)
+    }
+  },
+
+  recordActivityCompletion: (studentId: string, activityTitle?: string): StudentRecord | undefined => {
+    const list = studentService.getStudents()
+    let updated: StudentRecord | undefined
+    const nextList = list.map((s) => {
+      if (s.id === studentId || s.studentId === studentId) {
+        const nextCompleted = (s.completedActivitiesCount || 0) + 1
+        const totalAssigned = Math.max(s.assignedActivitiesCount || 3, nextCompleted)
+        const nextPercent = Math.min(100, Math.round((nextCompleted / totalAssigned) * 100))
+        const nextStatus = nextPercent >= 80 ? 'Demonstrated' : nextPercent >= 50 ? 'Developing' : s.overallStatus
+        updated = {
+          ...s,
+          completedActivitiesCount: nextCompleted,
+          assignedActivitiesCount: totalAssigned,
+          progressPercent: nextPercent,
+          overallStatus: nextStatus,
+          lastAssessedDate: 'Today',
+          nextRecommendedAction:
+            nextPercent >= 100
+              ? 'Schedule mastery verification check'
+              : `Continue Step ${nextCompleted + 1} micro-practice`,
+        }
+        return updated
+      }
+      return s
+    })
+
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(nextList))
+      } catch {
+        // Ignore
+      }
+    }
+    return updated
   },
 }
