@@ -75,9 +75,14 @@ export const localStore = {
 
   resetWorkspace: (): void => {
     if (typeof window === 'undefined') return
-    Object.values(STORAGE_KEYS).forEach((key) => {
-      localStorage.removeItem(key)
-    })
+    const keysToRemove: string[] = []
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i)
+      if (key && key.startsWith('saksham_fln_') && key !== STORAGE_KEYS.LOCALE) {
+        keysToRemove.push(key)
+      }
+    }
+    keysToRemove.forEach((k) => localStorage.removeItem(k))
     localStorage.removeItem(VERSION_KEY)
   },
 }

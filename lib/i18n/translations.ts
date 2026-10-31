@@ -266,6 +266,60 @@ export interface TranslationDictionary {
     helpdeskSupport: string
     demoDisclaimer: string
   }
+
+  // Landing Page
+  landing: {
+    heroBadge: string
+    heroTitle: string
+    heroHighlight: string
+    heroDescription: string
+    explorePlatform: string
+    seeHowItWorks: string
+    teacherGuided: string
+    offlineAware: string
+    inclusiveByDesign: string
+    learningOverview: string
+    studentsAssessed: string
+    ofLearners: string
+    activePathways: string
+    prerequisitePlans: string
+    milestoneCompletion: string
+    last6Weeks: string
+    nextTeacherAction: string
+    sampleActionTitle: string
+    practicalCycleBadge: string
+    practicalCycleHeading: string
+    practicalCycleDesc: string
+    steps: {
+      assessTitle: string
+      assessDesc: string
+      understandTitle: string
+      understandDesc: string
+      practiceTitle: string
+      practiceDesc: string
+      trackTitle: string
+      trackDesc: string
+    }
+    classroomBadge: string
+    classroomHeading: string
+    classroomDesc: string
+    features: {
+      prereqTitle: string
+      prereqDesc: string
+      pathwaysTitle: string
+      pathwaysDesc: string
+      offlineTitle: string
+      offlineDesc: string
+      privacyTitle: string
+      privacyDesc: string
+    }
+    sharedViewTitle: string
+    sharedViewDesc: string
+    sharedViewBullets: string[]
+    openWorkspace: string
+    footerDisclaimer: string
+    footerMission: string
+  }
 }
 
 export const translations: Record<Locale, TranslationDictionary> = {
@@ -530,6 +584,67 @@ export const translations: Record<Locale, TranslationDictionary> = {
       demoDisclaimer:
         'Synthetic prototype demonstration. Evaluated for Collector Office, Devbhumi Dwarka.',
     },
+    landing: {
+      heroBadge: 'Foundational literacy and numeracy',
+      heroTitle: 'Find the learning gap.',
+      heroHighlight: 'Build the next step.',
+      heroDescription:
+        'Saksham FLN helps schools understand individual learning needs, personalize remedial practice, and give every child a clear pathway forward without ranking or stigma.',
+      explorePlatform: 'Explore the platform',
+      seeHowItWorks: 'See how it works',
+      teacherGuided: 'Teacher-guided',
+      offlineAware: 'Offline-aware',
+      inclusiveByDesign: 'Inclusive by design',
+      learningOverview: 'Learning overview',
+      studentsAssessed: 'Students assessed',
+      ofLearners: 'of 28 learners',
+      activePathways: 'Active pathways',
+      prerequisitePlans: 'prerequisite plans',
+      milestoneCompletion: 'Class milestone completion',
+      last6Weeks: 'Last 6 weeks',
+      nextTeacherAction: 'Next teacher action',
+      sampleActionTitle: 'Revisit place value with Aarav & Group B',
+      practicalCycleBadge: 'A practical cycle',
+      practicalCycleHeading: 'From a small signal to a useful next step.',
+      practicalCycleDesc:
+        'Short diagnostic checks do not define a child. They help teachers uncover prerequisite gaps and decide what to notice, practise, and reinforce next.',
+      steps: {
+        assessTitle: 'Assess',
+        assessDesc: 'A short, child-friendly check makes foundational learning needs visible.',
+        understandTitle: 'Understand',
+        understandDesc: 'See the prerequisite skills behind each learning gap without stigma.',
+        practiceTitle: 'Practice',
+        practiceDesc: 'Get focused classroom activities that fit the learner\'s next developmental step.',
+        trackTitle: 'Track progress',
+        trackDesc: 'Help teachers notice progress and celebrate incremental milestones.',
+      },
+      classroomBadge: 'Built for the classroom',
+      classroomHeading: 'Less paperwork. More time for teaching.',
+      classroomDesc:
+        'A calm workspace for teachers, school heads, and education coordinators to address learning needs without ranking children or replacing teacher judgement.',
+      features: {
+        prereqTitle: 'Prerequisite diagnosis',
+        prereqDesc: 'Look beyond a raw score to the prerequisite skill that may need concrete attention.',
+        pathwaysTitle: 'Targeted pathways',
+        pathwaysDesc: 'Generate 10-15 minute remedial activities designed for regular classroom routines.',
+        offlineTitle: 'Offline-aware design',
+        offlineDesc: 'Keep downloaded assessment materials and recorded progress visible when offline.',
+        privacyTitle: 'Privacy by design',
+        privacyDesc: 'Use synthetic demo records and pseudonymous patterns with no external data leakage.',
+      },
+      sharedViewTitle: 'A shared view of foundational progress',
+      sharedViewDesc:
+        'Teachers identify the next supportive action for each learner. School leaders view aggregate coverage and growth — not punitive league tables.',
+      sharedViewBullets: [
+        'Review a student’s foundational learning profile',
+        'Run a 3-minute diagnostic assessment check',
+        'Approve a tailored 5-day remedial pathway',
+        'Track completed classroom practice activities',
+      ],
+      openWorkspace: 'Open the demo workspace',
+      footerDisclaimer: '© 2026 Saksham FLN · Illustrative prototype · Synthetic demonstration',
+      footerMission: 'Designed for inclusive foundational learning.',
+    },
   },
 
   gu: {
@@ -793,6 +908,67 @@ export const translations: Record<Locale, TranslationDictionary> = {
       demoDisclaimer:
         'કલેક્ટર કચેરી, દેવભૂમિ દ્વારકા અંતર્ગત શૈક્ષણિક નિદર્શન પ્રોટોટાઇપ.',
     },
+    landing: {
+      heroBadge: 'પાયાનું સાક્ષરતા અને સંખ્યાજ્ઞાન',
+      heroTitle: 'અધ્યયન કચાશ ઓળખો.',
+      heroHighlight: 'આગલું પગલું બનાવો.',
+      heroDescription:
+        'સક્ષમ FLN શાળાઓને દરેક બાળકની વ્યક્તિગત જરૂરિયાતો સમજવામાં, ઉપચારાત્મક મહાવરો પૂરો પાડવામાં અને કોઈ પણ પ્રકારના રૅન્કિંગ કે લેબલિંગ વિના સ્પષ્ટ આગળ વધવાનો માર્ગ આપવામાં સહાય કરે છે.',
+      explorePlatform: 'પ્લેટફોર્મ અન્વેષણ કરો',
+      seeHowItWorks: 'આ કેવી રીતે કાર્ય કરે છે',
+      teacherGuided: 'શિક્ષક-માર્ગદર્શિત',
+      offlineAware: 'ઑફલાઇન-સક્ષમ',
+      inclusiveByDesign: 'સહજ સમાવેશી',
+      learningOverview: 'અધ્યયન વિહંગાવલોકન',
+      studentsAssessed: 'મૂલ્યાંકન થયેલ વિદ્યાર્થીઓ',
+      ofLearners: '૨૮ વિદ્યાર્થીઓમાંથી',
+      activePathways: 'સક્રિય ઉપચારાત્મક યોજનાઓ',
+      prerequisitePlans: 'પૂર્વજરૂરી કૌશલ્ય યોજના',
+      milestoneCompletion: 'વર્ગ માઈલસ્ટોન પૂર્ણતા',
+      last6Weeks: 'છેલ્લા ૬ અઠવાડિયા',
+      nextTeacherAction: 'શિક્ષકનું આગલું પગલું',
+      sampleActionTitle: 'આરવ અને જૂથ બી સાથે સ્થાનકિંમત પુનરાવર્તન',
+      practicalCycleBadge: 'એક વ્યવહારુ ચક્ર',
+      practicalCycleHeading: 'નાના સંકેતથી ઉપયોગી આગલા પગલા સુધી.',
+      practicalCycleDesc:
+        'ટૂંકી નિદાન કસોટીઓ બાળકની ક્ષમતા નક્કી નથી કરતી, પરંતુ શિક્ષકને પૂર્વજરૂરી કચાશ શોધી આગળ શું શીખવવું તે નક્કી કરવામાં મદદ કરે છે.',
+      steps: {
+        assessTitle: 'મૂલ્યાંકન',
+        assessDesc: 'બાળ-મૈત્રીપૂર્ણ ટૂંકી કસોટી પાયાની જરૂરિયાતોને સ્પષ્ટ કરે છે.',
+        understandTitle: 'સમજો',
+        understandDesc: 'કોઈ પણ પૂર્વગ્રહ વિના દરેક અંતરાલ પાછળ રહેલા પૂર્વજરૂરી કૌશલ્યો સમજો.',
+        practiceTitle: 'મહાવરો',
+        practiceDesc: 'બાળકના આગલા પગલાને અનુરૂપ કેન્દ્રિત વર્ગખંડ પ્રવૃત્તિઓ મેળવો.',
+        trackTitle: 'પ્રગતિ ટ્રેક કરો',
+        trackDesc: 'શિક્ષકોને પ્રગતિ નોંધવામાં અને સિદ્ધિઓને પ્રોત્સાહિત કરવામાં મદદ કરો.',
+      },
+      classroomBadge: 'વર્ગખંડ માટે તૈયાર',
+      classroomHeading: 'ઓછી કાગળિયાગીરી. શિક્ષણ માટે વધુ સમય.',
+      classroomDesc:
+        'શિક્ષકો અને સંયોજકો માટે શાંત અને અસરકારક કાર્યક્ષેત્ર, કોઈ પણ સ્પર્ધાત્મક દબાણ વગર.',
+      features: {
+        prereqTitle: 'પૂર્વજરૂરી કૌશલ્ય નિદાન',
+        prereqDesc: 'સામાન્ય ગુણથી આગળ વધી બાળકની વાસ્તવિક પૂર્વજરૂરી જરૂરિયાત ઓળખો.',
+        pathwaysTitle: 'લક્ષિત ઉપચારાત્મક માર્ગ',
+        pathwaysDesc: 'નિયમિત વર્ગખંડ માટે અનુકૂળ ૧૦-૧૫ મિનિટની ઉપચારાત્મક પ્રવૃત્તિઓ.',
+        offlineTitle: 'ઑફલાઇન સક્ષમતા',
+        offlineDesc: 'ઇન્ટરનેટ વિના પણ કસોટી સામગ્રી અને નોંધાયેલ પ્રગતિ સાચવો.',
+        privacyTitle: 'ગોપનીયતા સુરક્ષા',
+        privacyDesc: 'સિન્થેટિક ડેમો ડેટા અને સુરક્ષિત સ્થાનિક સ્ટોરેજ.',
+      },
+      sharedViewTitle: 'પાયાની પ્રગતિનું સંયુક્ત દૃશ્ય',
+      sharedViewDesc:
+        'શિક્ષકો દરેક શીખનાર માટે સહાયક પગલું નક્કી કરે છે. શાળા અગ્રણીઓ સામૂહિક પ્રગતિ જુએ છે — કોઈ સ્પર્ધાત્મક યાદી નહીં.',
+      sharedViewBullets: [
+        'વિદ્યાર્થીની પાયાની અધ્યયન પ્રોફાઇલની સમીક્ષા કરો',
+        '૩-મિનિટની ઝડપી નિદાન કસોટી લો',
+        '૫-દિવસીય ઉપચારાત્મક માર્ગ મંજૂર કરો',
+        'પૂર્ણ થયેલ વર્ગખંડ પ્રવૃત્તિઓ ટ્રેક કરો',
+      ],
+      openWorkspace: 'ડેમો વર્કસ્પેસ ખોલો',
+      footerDisclaimer: '© ૨૦૨૬ સક્ષમ FLN · શૈક્ષણિક પ્રદર્શન પ્રોટોટાઇપ · સિન્થેટિક ડેમો ડેટા',
+      footerMission: 'સમાવેશી પાયાના અધ્યયન માટે સમર્પિત.',
+    },
   },
 
   hi: {
@@ -1055,6 +1231,67 @@ export const translations: Record<Locale, TranslationDictionary> = {
       helpdeskSupport: 'विद्यालय खाते में प्रवेश में सहायता चाहिए? सहायता केंद्र',
       demoDisclaimer:
         'कलेक्टर कार्यालय, देवभूमि द्वारका के अंतर्गत शैक्षणिक प्रदर्शन प्रोटोटाइप।',
+    },
+    landing: {
+      heroBadge: 'बुनियादी साक्षरता एवं संख्याज्ञान',
+      heroTitle: 'अधिगम अंतराल पहचानें।',
+      heroHighlight: 'अगला कदम बनाएं।',
+      heroDescription:
+        'सक्षम FLN विद्यालयों को व्यक्तिगत अधिगम आवश्यकताओं को समझने, उपचारात्मक अभ्यास देने और बिना किसी भेदभाव के प्रत्येक बच्चे को आगे बढ़ने का स्पष्ट मार्ग प्रदान करने में मदद करता है।',
+      explorePlatform: 'मंच का अन्वेषण करें',
+      seeHowItWorks: 'यह कैसे काम करता है',
+      teacherGuided: 'शिक्षक-निर्देशित',
+      offlineAware: 'ऑफ़लाइन-सक्षम',
+      inclusiveByDesign: 'समावेशी अभिकल्पन',
+      learningOverview: 'अधिगम अवलोकन',
+      studentsAssessed: 'मूल्यांकित विद्यार्थी',
+      ofLearners: '२८ विद्यार्थियों में से',
+      activePathways: 'सक्रिय उपचारात्मक योजनाएं',
+      prerequisitePlans: 'पूर्वपेक्षित कौशल योजनाएं',
+      milestoneCompletion: 'कक्षा माइलस्टोन पूर्णता',
+      last6Weeks: 'पिछले ६ सप्ताह',
+      nextTeacherAction: 'शिक्षक का अगला कदम',
+      sampleActionTitle: 'आरव और समूह बी के साथ स्थानीय मान का पुनरावलोकन',
+      practicalCycleBadge: 'एक व्यावहारिक चक्र',
+      practicalCycleHeading: 'छोटे संकेत से उपयोगी अगले कदम तक।',
+      practicalCycleDesc:
+        'संक्षिप्त नैदानिक जांच बच्चे को सीमित नहीं करती, बल्कि शिक्षक को पूर्वपेक्षित कौशल अंतर समझने और अगले अभ्यास की योजना बनाने में सहायता करती है।',
+      steps: {
+        assessTitle: 'आकलन',
+        assessDesc: 'बाल-अनुकूल संक्षिप्त जांच बुनियादी अधिगम आवश्यकताओं को स्पष्ट करती है।',
+        understandTitle: 'समझें',
+        understandDesc: 'किसी पूर्वाग्रह के बिना अधिगम अंतर के पीछे के पूर्वपेक्षित कौशलों को पहचानें।',
+        practiceTitle: 'अभ्यास',
+        practiceDesc: 'शिक्षार्थी के अगले विकासात्मक कदम के अनुकूल केंद्रित कक्षा गतिविधियां प्राप्त करें।',
+        trackTitle: 'प्रगति देखें',
+        trackDesc: 'शिक्षकों को क्रमिक प्रगति पहचानने और उपलब्धियों को प्रोत्साहित करने में सहायता करें।',
+      },
+      classroomBadge: 'कक्षा के लिए निर्मित',
+      classroomHeading: 'कम कागजी कार्यवाही। शिक्षण के लिए अधिक समय।',
+      classroomDesc:
+        'शिक्षकों, प्रधानाध्यापकों और समन्वयकों के लिए एक सहज और प्रभावी कार्यक्षेत्र।',
+      features: {
+        prereqTitle: 'पूर्वपेक्षित कौशल निदान',
+        prereqDesc: 'सामान्य अंकों से परे उस बुनियादी कौशल को पहचानें जिस पर ध्यान देने की आवश्यकता है।',
+        pathwaysTitle: 'लक्षित उपचारात्मक पथ',
+        pathwaysDesc: 'नियमित कक्षा दिनचर्या के लिए १०-१५ मिनट की उपचारात्मक गतिविधियां।',
+        offlineTitle: 'ऑफ़लाइन-सक्षम संरचना',
+        offlineDesc: 'इंटरनेट न होने पर भी डाउनलोड की गई सामग्री और दर्ज प्रगति सुरक्षित रखें।',
+        privacyTitle: 'पूर्ण गोपनीयता',
+        privacyDesc: 'सिंथेटिक डेमो रिकॉर्ड्स और स्थानीय डेटा सुरक्षा।',
+      },
+      sharedViewTitle: 'बुनियादी प्रगति का साझा अवलोकन',
+      sharedViewDesc:
+        'शिक्षक प्रत्येक बच्चे के लिए सहायक कदम तय करते हैं। विद्यालय नेतृत्व समग्र प्रगति देखता है — कोई तुलनात्मक रैंकिंग नहीं।',
+      sharedViewBullets: [
+        'विद्यार्थी की बुनियादी शिक्षण प्रोफ़ाइल देखें',
+        '३-मिनट की त्वरित नैदानिक जांच करें',
+        '५-दिवसीय उपचारात्मक योजना स्वीकृत करें',
+        'कक्षा में पूर्ण की गई गतिविधियों को ट्रैक करें',
+      ],
+      openWorkspace: 'डेमो कार्यक्षेत्र खोलें',
+      footerDisclaimer: '© २०२६ सक्षम FLN · शैक्षणिक प्रदर्शन प्रोटोटाइप · सिंथेटिक डेमो डेटा',
+      footerMission: 'समावेशी बुनियादी शिक्षा के लिए समर्पित।',
     },
   },
 }

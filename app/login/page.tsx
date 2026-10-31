@@ -5,16 +5,13 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import {
   ArrowLeft,
-  BookOpen,
   CheckCircle2,
   Eye,
   EyeOff,
   HelpCircle,
-  Info,
   Loader2,
   LockKeyhole,
   Mail,
-  Phone,
   ShieldCheck,
   X,
 } from 'lucide-react'
@@ -22,18 +19,19 @@ import { Button } from '@/components/ui/button'
 import { authService } from '@/lib/services/authService'
 import { useI18n } from '@/lib/i18n/context'
 import { Role } from '@/lib/types'
+import { LanguageSelector } from '@/components/language-selector'
 
-const roleOptions: Array<{ id: Role; label: string; email: string }> = [
-  { id: 'teacher', label: 'Classroom Teacher (Class 3A)', email: 'asha.shah@primary-school.demo' },
-  { id: 'head_teacher', label: 'Head Teacher (School Principal)', email: 'headmaster@primary-school.demo' },
-  { id: 'crc_coordinator', label: 'CRC Cluster Coordinator', email: 'crc.coordinator@district-fln.demo' },
-  { id: 'deo', label: 'District Education Officer (DEO)', email: 'deo.dwarka@education.demo' },
-  { id: 'parent', label: 'Parent / Guardian (Aarav K.)', email: 'parent.aarav@guardian.demo' },
+const roleOptions: Array<{ id: Role; labelKey: string; defaultLabel: string; email: string }> = [
+  { id: 'teacher', labelKey: 'teacher', defaultLabel: 'Classroom Teacher (Class 3A)', email: 'asha.shah@primary-school.demo' },
+  { id: 'head_teacher', labelKey: 'head_teacher', defaultLabel: 'Head Teacher (School Principal)', email: 'headmaster@primary-school.demo' },
+  { id: 'crc_coordinator', labelKey: 'crc_coordinator', defaultLabel: 'CRC Cluster Coordinator', email: 'crc.coordinator@district-fln.demo' },
+  { id: 'deo', labelKey: 'deo', defaultLabel: 'District Education Officer (DEO)', email: 'deo.dwarka@education.demo' },
+  { id: 'parent', labelKey: 'parent', defaultLabel: 'Parent / Guardian (Aarav K.)', email: 'parent.aarav@guardian.demo' },
 ]
 
 export default function LoginPage() {
   const router = useRouter()
-  const { t, locale, setLocale } = useI18n()
+  const { t } = useI18n()
 
   const [selectedRole, setSelectedRole] = useState<Role>('teacher')
   const [showPassword, setShowPassword] = useState(false)
@@ -54,11 +52,11 @@ export default function LoginPage() {
   function handleSignIn(e?: React.FormEvent) {
     if (e) e.preventDefault()
     if (!email.trim()) {
-      setError('Enter your registered email, school code, or mobile number.')
+      setError(t.login.schoolCodeOrEmail)
       return
     }
     if (!password.trim()) {
-      setError('Please enter your password.')
+      setError(t.login.password)
       return
     }
 
@@ -91,39 +89,39 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="grid min-h-screen bg-[#F7F9F6] lg:grid-cols-[1.1fr_0.9fr]">
+    <main className="grid min-h-screen bg-[#F7F9F6] lg:grid-cols-[1.05fr_0.95fr]">
       {/* Left branding pillar */}
-      <section className="relative hidden overflow-hidden bg-[#17324D] p-10 text-white lg:flex lg:flex-col lg:justify-between xl:p-16">
-        <div className="flex items-center gap-2.5">
-          <div className="flex size-9 items-center justify-center rounded-lg bg-[#0D9488] font-bold text-white text-base">
+      <section className="relative hidden overflow-hidden bg-[#17324D] p-10 text-white lg:flex lg:flex-col lg:justify-between xl:p-14">
+        <div className="flex items-center gap-3">
+          <div className="flex size-10 items-center justify-center rounded-xl bg-[#0D9488] font-bold text-white text-base">
             SF
           </div>
           <div>
-            <span className="text-base font-bold text-white">Saksham FLN</span>
-            <span className="block text-[10px] uppercase tracking-wider text-[#8ACFC4]">
-              Collectorate, Devbhumi Dwarka
+            <span className="text-lg font-bold text-white">{t.appName}</span>
+            <span className="block text-[11px] font-medium tracking-wide text-[#8ACFC4]">
+              {t.districtName}
             </span>
           </div>
         </div>
 
         <div className="max-w-lg space-y-4">
-          <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-[#8ACFC4]">
-            Problem ID: PS000034 · Foundational Literacy & Numeracy
+          <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1 text-xs font-semibold text-[#8ACFC4]">
+            Problem ID: PS000034 · {t.landing.heroBadge}
           </div>
 
           <h1 className="text-3xl font-bold tracking-tight text-white xl:text-4xl">
-            Every child deserves a clear pathway forward.
+            {t.tagline}
           </h1>
 
           <p className="text-sm leading-relaxed text-white/70">
-            A practical, accessible foundational education platform designed for teachers and education administrators across Indian government and aided schools.
+            {t.landing.heroDescription}
           </p>
 
           <div className="mt-8 space-y-3.5 pt-2">
             {[
-              ['Prerequisite-level diagnostics', 'Notice the foundational barrier behind a gap without comparative ranking.'],
-              ['Targeted 5-day remedial pathways', 'Turn screening insights into structured 10-15 minute tactile classroom activities.'],
-              ['Offline-aware data continuity', 'Keep student practice and milestone tracking functioning without active internet.'],
+              [t.landing.features.prereqTitle, t.landing.features.prereqDesc],
+              [t.landing.features.pathwaysTitle, t.landing.features.pathwaysDesc],
+              [t.landing.features.offlineTitle, t.landing.features.offlineDesc],
             ].map(([title, desc], idx) => (
               <div key={title} className="flex items-start gap-3">
                 <span className="flex size-6 shrink-0 items-center justify-center rounded-md bg-[#0D9488] text-xs font-bold text-white">
@@ -131,7 +129,7 @@ export default function LoginPage() {
                 </span>
                 <div>
                   <p className="text-xs font-bold text-white">{title}</p>
-                  <p className="text-[11px] text-white/60">{desc}</p>
+                  <p className="text-[11px] text-white/60 leading-normal">{desc}</p>
                 </div>
               </div>
             ))}
@@ -139,7 +137,7 @@ export default function LoginPage() {
         </div>
 
         <div className="flex items-center justify-between text-xs text-white/50 border-t border-white/10 pt-4">
-          <span>Asha Primary School · Devbhumi Dwarka</span>
+          <span>{t.schoolName} · {t.districtName}</span>
           <span className="rounded bg-white/10 px-2 py-0.5 text-[10px] text-[#8ACFC4]">
             Synthetic FLN Prototype
           </span>
@@ -154,62 +152,34 @@ export default function LoginPage() {
               href="/"
               className="inline-flex items-center gap-1.5 text-xs font-medium text-[#64748B] hover:text-[#17324D]"
             >
-              <ArrowLeft size={14} /> Back
+              <ArrowLeft size={14} /> {t.common.previous}
             </Link>
 
-            {/* Language Switcher */}
-            <div className="flex items-center rounded-lg border border-[#CBD5E1] bg-white p-0.5 text-xs font-medium">
-              <button
-                type="button"
-                onClick={() => setLocale('en')}
-                className={`rounded px-2 py-0.5 transition ${
-                  locale === 'en' ? 'bg-[#0D9488] font-bold text-white' : 'text-[#64748B]'
-                }`}
-              >
-                EN
-              </button>
-              <button
-                type="button"
-                onClick={() => setLocale('gu')}
-                className={`rounded px-2 py-0.5 transition ${
-                  locale === 'gu' ? 'bg-[#0D9488] font-bold text-white' : 'text-[#64748B]'
-                }`}
-              >
-                ગુજરાતી
-              </button>
-              <button
-                type="button"
-                onClick={() => setLocale('hi')}
-                className={`rounded px-2 py-0.5 transition ${
-                  locale === 'hi' ? 'bg-[#0D9488] font-bold text-white' : 'text-[#64748B]'
-                }`}
-              >
-                हिन्दी
-              </button>
-            </div>
+            {/* Language Selector */}
+            <LanguageSelector variant="pill" />
           </div>
 
           <div>
-            <h2 className="text-2xl font-bold tracking-tight text-[#17324D]">Sign In</h2>
-            <p className="mt-0.5 text-xs text-[#64748B]">
-              Access your classroom workspace and diagnostic records.
+            <h2 className="text-2xl font-bold tracking-tight text-[#17324D]">{t.login.heading}</h2>
+            <p className="mt-1 text-xs text-[#64748B]">
+              {t.login.subheading}
             </p>
           </div>
 
           <form onSubmit={handleSignIn} className="space-y-4">
             <div>
               <label className="block text-xs font-bold text-[#17324D]" htmlFor="role">
-                Role Perspective
+                {t.login.signInAs}
               </label>
               <select
                 id="role"
                 value={selectedRole}
                 onChange={(e) => handleRoleChange(e.target.value as Role)}
-                className="mt-1 h-9 w-full rounded-lg border border-[#CBD5E1] bg-white px-2.5 text-xs font-medium text-[#17324D] focus:border-[#0D9488] focus:outline-none"
+                className="mt-1.5 h-10 w-full rounded-lg border border-[#CBD5E1] bg-white px-3 text-xs font-medium text-[#17324D] focus:border-[#0D9488] focus:outline-none"
               >
                 {roleOptions.map((opt) => (
                   <option key={opt.id} value={opt.id}>
-                    {opt.label}
+                    {opt.defaultLabel}
                   </option>
                 ))}
               </select>
@@ -217,10 +187,10 @@ export default function LoginPage() {
 
             <div>
               <label className="block text-xs font-bold text-[#17324D]" htmlFor="email">
-                School ID or Registered Email
+                {t.login.schoolCodeOrEmail}
               </label>
-              <div className="relative mt-1">
-                <Mail className="absolute left-2.5 top-2.5 text-[#94A3B8]" size={15} />
+              <div className="relative mt-1.5">
+                <Mail className="absolute left-3 top-3 text-[#94A3B8]" size={15} />
                 <input
                   id="email"
                   type="text"
@@ -229,7 +199,7 @@ export default function LoginPage() {
                     setEmail(e.target.value)
                     if (error) setError('')
                   }}
-                  className={`h-9 w-full rounded-lg border bg-white pl-8 pr-3 text-xs text-[#17324D] focus:border-[#0D9488] focus:outline-none ${
+                  className={`h-10 w-full rounded-lg border bg-white pl-9 pr-3 text-xs text-[#17324D] focus:border-[#0D9488] focus:outline-none ${
                     error ? 'border-[#B42318]' : 'border-[#CBD5E1]'
                   }`}
                   placeholder="name@school.demo"
@@ -240,22 +210,22 @@ export default function LoginPage() {
 
             <div>
               <label className="block text-xs font-bold text-[#17324D]" htmlFor="password">
-                Password
+                {t.login.password}
               </label>
-              <div className="relative mt-1">
-                <LockKeyhole className="absolute left-2.5 top-2.5 text-[#94A3B8]" size={15} />
+              <div className="relative mt-1.5">
+                <LockKeyhole className="absolute left-3 top-3 text-[#94A3B8]" size={15} />
                 <input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="h-9 w-full rounded-lg border border-[#CBD5E1] bg-white pl-8 pr-9 text-xs text-[#17324D] focus:border-[#0D9488] focus:outline-none"
+                  className="h-10 w-full rounded-lg border border-[#CBD5E1] bg-white pl-9 pr-10 text-xs text-[#17324D] focus:border-[#0D9488] focus:outline-none"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
-                  className="absolute right-2 top-2 text-[#94A3B8] hover:text-[#17324D]"
+                  aria-label={showPassword ? t.login.hidePassword : t.login.showPassword}
+                  className="absolute right-2.5 top-2.5 p-1 text-[#94A3B8] hover:text-[#17324D]"
                 >
                   {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
@@ -270,7 +240,7 @@ export default function LoginPage() {
                   onChange={(e) => setRememberMe(e.target.checked)}
                   className="size-3.5 rounded accent-[#0D9488]"
                 />
-                <span>Remember this device</span>
+                <span>{t.login.rememberDevice}</span>
               </label>
 
               <button
@@ -278,23 +248,23 @@ export default function LoginPage() {
                 onClick={() => setModalType('forgot')}
                 className="font-semibold text-[#0D9488] hover:underline"
               >
-                Forgot password?
+                {t.login.forgotPassword}
               </button>
             </div>
 
-            <div className="space-y-2 pt-1">
+            <div className="space-y-2.5 pt-2">
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="h-9 w-full rounded-lg bg-[#0D9488] text-xs font-semibold text-white shadow-xs hover:bg-[#087F75]"
+                className="h-10 w-full rounded-lg bg-[#0D9488] text-xs font-semibold text-white shadow-xs hover:bg-[#087F75]"
               >
                 {isSubmitting ? (
                   <>
-                    <Loader2 size={14} className="mr-1.5 animate-spin" /> Entering Workspace…
+                    <Loader2 size={14} className="mr-1.5 animate-spin" /> {t.common.loading}
                   </>
                 ) : (
                   <>
-                    <ShieldCheck size={14} className="mr-1.5" /> Enter Workspace
+                    <ShieldCheck size={14} className="mr-1.5" /> {t.login.signInButton}
                   </>
                 )}
               </Button>
@@ -303,9 +273,9 @@ export default function LoginPage() {
                 type="button"
                 variant="outline"
                 onClick={handleDirectDemo}
-                className="h-9 w-full rounded-lg border-[#CBD5E1] text-xs font-semibold text-[#17324D] hover:bg-[#F1F5F3]"
+                className="h-10 w-full rounded-lg border-[#CBD5E1] text-xs font-semibold text-[#17324D] hover:bg-[#F1F5F3]"
               >
-                One-Click Quick Access
+                {t.login.exploreDemoButton}
               </Button>
             </div>
           </form>
@@ -316,8 +286,14 @@ export default function LoginPage() {
               onClick={() => setModalType('support')}
               className="text-xs text-[#64748B] hover:text-[#0D9488] hover:underline"
             >
-              Need assistance? School Helpdesk
+              {t.login.helpdeskSupport}
             </button>
+          </div>
+
+          <div className="border-t border-[#E2E8E5] pt-3 text-center">
+            <p className="text-[11px] text-[#94A3B8]">
+              {t.login.demoDisclaimer}
+            </p>
           </div>
         </div>
       </section>
@@ -359,9 +335,9 @@ export default function LoginPage() {
             <div className="mt-4 flex justify-end">
               <Button
                 onClick={() => setModalType(null)}
-                className="h-7.5 rounded-lg bg-[#0D9488] px-3 text-xs font-semibold text-white hover:bg-[#087F75]"
+                className="h-8 rounded-lg bg-[#0D9488] px-3 text-xs font-semibold text-white hover:bg-[#087F75]"
               >
-                Close
+                {t.common.close}
               </Button>
             </div>
           </div>

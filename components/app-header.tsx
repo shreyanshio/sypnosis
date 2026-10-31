@@ -4,20 +4,20 @@ import React, { useState } from 'react'
 import {
   Bell,
   ChevronDown,
-  Globe,
-  Languages,
   Menu,
   RotateCcw,
   Search,
   ShieldCheck,
-  User,
+  Sparkles,
   Wifi,
   WifiOff,
 } from 'lucide-react'
-import { Role, Locale } from '@/lib/types'
+import { Role } from '@/lib/types'
 import { useI18n } from '@/lib/i18n/context'
 import { authService, DEMO_PROFILES } from '@/lib/services/authService'
 import { SyncState } from '@/lib/services/syncService'
+import { LanguageSelector } from '@/components/language-selector'
+import { localStore } from '@/lib/storage'
 
 interface AppHeaderProps {
   onOpenSidebar: () => void
@@ -32,10 +32,10 @@ interface AppHeaderProps {
 
 const ROLES_LIST: Array<{ id: Role; labelEn: string; labelGu: string; labelHi: string }> = [
   { id: 'teacher', labelEn: 'Teacher (Asha Shah)', labelGu: 'શિક્ષક (આશાબેન)', labelHi: 'शिक्षिका (आशा शाह)' },
-  { id: 'head_teacher', labelEn: 'Head Teacher (Govindbhai)', labelGu: 'મુખ્ય શિક્ષક (ગોવિંદભાઈ)', labelHi: 'प्रधानाध्यापक (गोविंदभाई)' },
-  { id: 'crc_coordinator', labelEn: 'CRC Coordinator (Khambhalia)', labelGu: 'સી.આર.સી. સંયોજક', labelHi: 'सी.आर.सी. समन्वयक' },
-  { id: 'deo', labelEn: 'DEO (Devbhumi Dwarka)', labelGu: 'જિલ્લા શિક્ષણાધિકારી (DEO)', labelHi: 'जिला शिक्षा अधिकारी' },
-  { id: 'parent', labelEn: 'Parent (Rameshbhai)', labelGu: 'વાલી પોર્ટલ (રમેશભાઈ)', labelHi: 'अभिभावक (रमेशभाई)' },
+  { id: 'head_teacher', labelEn: 'Head Teacher (Govindbhai)', labelGu: 'મુખ્ય શિક્ષક (ગોવિંદભાઈ)', labelHi: 'પ્રધાનાધ્યાપક (ગોવિંદભાઈ)' },
+  { id: 'crc_coordinator', labelEn: 'CRC Coordinator (Khambhalia)', labelGu: 'સી.આર.સી. સંયોજક', labelHi: 'સી.આર.સી. સમન્વયક' },
+  { id: 'deo', labelEn: 'DEO (Devbhumi Dwarka)', labelGu: 'જિલ્લા શિક્ષણાધિકારી (DEO)', labelHi: 'જિલ્લા શિક્ષા અધિકારી' },
+  { id: 'parent', labelEn: 'Parent (Rameshbhai)', labelGu: 'વાલી પોર્ટલ (રમેશભાઈ)', labelHi: 'અભિભાવક (રમેશભાઈ)' },
 ]
 
 export function AppHeader({
@@ -48,14 +48,31 @@ export function AppHeader({
   onRoleChanged,
   hasUnreadNotifications,
 }: AppHeaderProps) {
-  const { locale, setLocale, t } = useI18n()
+  const { locale, t } = useI18n()
   const [roleMenuOpen, setRoleMenuOpen] = useState(false)
-  const [langMenuOpen, setLangMenuOpen] = useState(false)
+  const [resetConfirmOpen, setResetConfirmOpen] = useState(false)
+  const [resetToast, setResetToast] = useState(false)
 
   const activeUser = DEMO_PROFILES[currentRole]
 
+  function handleResetPresentationState() {
+    localStore.resetWorkspace()
+    setResetConfirmOpen(false)
+    setResetToast(true)
+    setTimeout(() => {
+      window.location.reload()
+    }, 700)
+  }
+
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-[#E2E8F0] bg-white px-4 sm:px-6">
+      {/* Toast alert on presentation reset */}
+      {resetToast && (
+        <div className="fixed right-6 top-16 z-50 rounded-lg border border-[#BFE2DA] bg-[#DFF4EF] px-4 py-2 text-xs font-bold text-[#087F75] shadow-lg animate-in fade-in">
+          ✓ Presentation dataset restored to initial state. Reloading...
+        </div>
+      )}
+
       {/* Left: Mobile burger & School Breadcrumb */}
       <div className="flex items-center gap-3">
         <button
@@ -77,15 +94,23 @@ export function AppHeader({
       </div>
 
       {/* Right Controls */}
-      <div className="flex items-center gap-2 sm:gap-3">
+      <div className="flex items-center gap-2 sm:gap-2.5">
+        {/* Reset Demo / Presentation State button */}
+        <button
+          type="button"
+          onClick={() => setResetConfirmOpen(true)}
+          className="hidden md:flex items-center gap-1.5 rounded-lg border border-[#E2E8F0] bg-[#F7F9F6] px-2.5 py-1 text-[11px] font-semibold text-[#64748B] hover:border-[#CBD5E1] hover:text-[#17324D] transition"
+          title="Reset presentation data to initial clean state for video walkthrough"
+        >
+          <RotateCcw size={12} className="opacity-70" />
+          <span>Reset Demo</span>
+        </button>
+
         {/* Role Selector Pill */}
         <div className="relative">
           <button
             type="button"
-            onClick={() => {
-              setRoleMenuOpen(!roleMenuOpen)
-              setLangMenuOpen(false)
-            }}
+            onClick={() => setRoleMenuOpen(!roleMenuOpen)}
             className="flex items-center gap-1.5 rounded-lg border border-[#E2E8F0] bg-[#F7F9F6] px-2.5 py-1 text-xs font-semibold text-[#17324D] hover:border-[#0D9488]"
             title="Switch User Role View"
           >
@@ -127,71 +152,8 @@ export function AppHeader({
           )}
         </div>
 
-        {/* Real Language Switcher */}
-        <div className="relative">
-          <button
-            type="button"
-            onClick={() => {
-              setLangMenuOpen(!langMenuOpen)
-              setRoleMenuOpen(false)
-            }}
-            className="flex items-center gap-1.5 rounded-lg border border-[#E2E8F0] bg-[#F7F9F6] px-2.5 py-1 text-xs font-bold text-[#17324D] hover:border-[#0D9488]"
-            title="Change Application Language"
-          >
-            <Languages size={14} className="text-[#0D9488]" />
-            <span>
-              {locale === 'gu' ? 'ગુજરાતી' : locale === 'hi' ? 'हिन्दी' : 'English'}
-            </span>
-            <ChevronDown size={12} className="opacity-60" />
-          </button>
-
-          {langMenuOpen && (
-            <div className="absolute right-0 top-9 z-50 w-36 rounded-xl border border-[#E2E8F0] bg-white py-1.5 shadow-xl">
-              <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">
-                Language
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setLocale('en')
-                  setLangMenuOpen(false)
-                }}
-                className={`flex w-full items-center justify-between px-3 py-1.5 text-xs ${
-                  locale === 'en' ? 'bg-[#DFF4EF] font-bold text-[#0D9488]' : 'text-[#263238] hover:bg-[#F7F9F6]'
-                }`}
-              >
-                <span>English</span>
-                {locale === 'en' && '✓'}
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setLocale('gu')
-                  setLangMenuOpen(false)
-                }}
-                className={`flex w-full items-center justify-between px-3 py-1.5 text-xs ${
-                  locale === 'gu' ? 'bg-[#DFF4EF] font-bold text-[#0D9488]' : 'text-[#263238] hover:bg-[#F7F9F6]'
-                }`}
-              >
-                <span>ગુજરાતી</span>
-                {locale === 'gu' && '✓'}
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setLocale('hi')
-                  setLangMenuOpen(false)
-                }}
-                className={`flex w-full items-center justify-between px-3 py-1.5 text-xs ${
-                  locale === 'hi' ? 'bg-[#DFF4EF] font-bold text-[#0D9488]' : 'text-[#263238] hover:bg-[#F7F9F6]'
-                }`}
-              >
-                <span>हिन्दी</span>
-                {locale === 'hi' && '✓'}
-              </button>
-            </div>
-          )}
-        </div>
+        {/* Unified Multilingual Language Selector Component */}
+        <LanguageSelector variant="pill" />
 
         {/* Offline Sync Status Badge / Trigger */}
         <button
@@ -260,6 +222,34 @@ export function AppHeader({
           </span>
         </div>
       </div>
+
+      {/* Reset Confirmation Dialog */}
+      {resetConfirmOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs">
+          <div className="w-full max-w-sm rounded-2xl border border-[#E2E8F0] bg-white p-5 shadow-2xl">
+            <h3 className="text-sm font-bold text-[#17324D]">Reset Presentation Data?</h3>
+            <p className="mt-2 text-xs leading-relaxed text-[#64748B]">
+              This will restore all student records, classroom rosters, and assessment attempts back to the official deterministic starting state for jury demonstration.
+            </p>
+            <div className="mt-4 flex items-center justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setResetConfirmOpen(false)}
+                className="rounded-lg border border-[#CBD5E1] px-3 py-1.5 text-xs font-semibold text-[#64748B] hover:bg-[#F8FAFC]"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleResetPresentationState}
+                className="rounded-lg bg-[#0D9488] px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-[#087F75]"
+              >
+                Reset to Baseline
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   )
 }
