@@ -4,7 +4,7 @@ __v0_devtools.tsx
 __v0_jsx-dev-runtime.ts
 .snowflake/
 .design-cache/
-.v0-trash/
+.v0-trash/ 
 .vercel/
 
 # Environment variables
