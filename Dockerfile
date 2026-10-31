@@ -6,7 +6,7 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Enable corepack and prepare pnpm
-RUN corepack enable && corepack prepare pnpm@9.15.4 --activate
+RUN corepack enable && corepack prepare pnpm@9.15.4 --activate 
 
 # Copy package manifests
 COPY package.json pnpm-lock.yaml* package-lock.json* ./
