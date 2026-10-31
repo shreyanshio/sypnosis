@@ -22,7 +22,7 @@
 
 ## Overview
 
-Saksham FLN is a proposed learning-support platform for primary and upper-primary schools. It helps teachers organize foundational literacy and numeracy (FLN) assessments, inspect skill-level evidence, plan targeted remedial activities, and follow student progress over time.
+Saksham FLN is a proposed learning-support platform for primary and upper-primary schools. It helps teachers organize foundational literacy and numeracy (FLN) assessments, inspect skill-level evidence, plan targeted remedial activities, and follow student progress over time. 
 
 In classrooms where teachers support students with different levels of comprehension, a total score alone may not show which prerequisite concept needs attention. Saksham FLN is designed around a practical cycle: **assess a skill → understand the evidence → choose a suitable activity → review progress → reassess when appropriate**.
 
